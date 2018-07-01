@@ -15,7 +15,15 @@ public class PlayerMovment : MonoBehaviour {
 	void Update () {
         if (Input.GetKeyDown("Right"))
         {
-            player.transform.
+            player.transform.Translate(Vector3.right);
+        }
+        if (Input.GetKeyDown("Left"))
+        {
+            player.transform.Translate(Vector3.left);
+        }
+        if (Input.GetKeyDown("Space"))
+        {
+            
         }
 	}
 }
