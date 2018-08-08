@@ -1,7 +1,13 @@
 fileFormatVersion: 2
 guid: da9a6fcbdeb55a449a053af875d1379a
 TextureImporter:
-  fileIDToRecycleName: {}
+  fileIDToRecycleName:
+    21300000: full poses_0
+    21300002: full poses_1
+    21300004: full poses_2
+    21300006: full poses_3
+    21300008: full poses_4
+    21300010: full poses_5
   externalObjects: {}
   serializedVersion: 5
   mipmaps:
@@ -38,7 +44,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -67,9 +73,140 @@ TextureImporter:
     allowsAlphaSplitting: 0
     overridden: 0
     androidETC2FallbackOverride: 0
+  - serializedVersion: 2
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: full poses_0
+      rect:
+        serializedVersion: 2
+        x: 12
+        y: 1617
+        width: 669
+        height: 1514
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 76c09e29757cd7b4fa31e2ea1f812a55
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: full poses_1
+      rect:
+        serializedVersion: 2
+        x: 805
+        y: 1604
+        width: 668
+        height: 1527
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 19124e019626ebd438ff0efff6745153
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: full poses_2
+      rect:
+        serializedVersion: 2
+        x: 1499
+        y: 2169
+        width: 899
+        height: 962
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9355961ef7663a142a731854790251d6
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: full poses_3
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 807
+        height: 1482
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 71877e68a2881bf43881a4f4edafc643
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: full poses_4
+      rect:
+        serializedVersion: 2
+        x: 782
+        y: 0
+        width: 917
+        height: 1452
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1db08cbb0e6a9c0499889edb2ba86833
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: full poses_5
+      rect:
+        serializedVersion: 2
+        x: 1432
+        y: 542
+        width: 924
+        height: 940
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f64cf13d395b45f4cb7483e75a7056fd
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
