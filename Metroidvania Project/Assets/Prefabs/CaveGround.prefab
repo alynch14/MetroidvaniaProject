@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 212580854053486004}
   - component: {fileID: 61707914547912304}
   m_Layer: 0
-  m_Name: ground (1)
+  m_Name: CaveGround
   m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

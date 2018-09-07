@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody))]
 public class PlayerMovment : MonoBehaviour {
     // Movement ids
     public readonly int MOVE_UP = 0;
@@ -30,6 +32,9 @@ public class PlayerMovment : MonoBehaviour {
     public float xVel = 0;
     public float yVel = 0;
     private bool grounded;
+    public GameObject floor;
+    private const float JUMP_HEIGHT = 2.0f;
+
 
     // Use this for initialization
     void Start () {
@@ -64,19 +69,24 @@ public class PlayerMovment : MonoBehaviour {
             horizontalMovement -= 1;
         }
 
-        if (Input.GetKey(movement[JUMP]))
+        float epsilon = 0.00000001f;
+        if (Input.GetKey(movement[JUMP]) && !NearlyEqual(verticalMovement, JUMP_HEIGHT, epsilon))
         {
             verticalMovement += 1;
             grounded = false;
         }
-
+        
         xVel += horizontalMovement * tempSpeed * Time.deltaTime;
         if (grounded)
         {
             yVel = 0;
         }
         else
-        { 
+        {
+            if (Mathf.Abs(verticalMovement - JUMP_HEIGHT) < epsilon)
+            {
+                verticalMovement -= 1;
+            }
             yVel += verticalMovement * tempSpeed * Time.deltaTime;
 
         }
@@ -111,5 +121,27 @@ public class PlayerMovment : MonoBehaviour {
 
         move = (Vector2.up * yVel) + (Vector2.right * xVel);
         gameObject.transform.Translate(move);
+    }
+
+    public static bool NearlyEqual(float a, float b, float epsilon)
+    {
+        double absA = Mathf.Abs(a);
+        double absB = Mathf.Abs(b);
+        double diff = Mathf.Abs(a - b);
+
+        if (a == b)
+        { // shortcut, handles infinities
+            return true;
+        }
+        else if (a == 0 || b == 0 || diff < Double.Epsilon)
+        {
+            // a or b is zero or both are extremely close to it
+            // relative error is less meaningful here
+            return diff < epsilon;
+        }
+        else
+        { // use relative error
+            return diff / (absA + absB) < epsilon;
+        }
     }
 }
