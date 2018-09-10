@@ -33,20 +33,23 @@ public class PlayerMovment : MonoBehaviour {
     public float yVel = 0;
     private bool grounded;
     public GameObject floor;
-    private const float JUMP_HEIGHT = 2.0f;
+    private const int JUMP_HEIGHT = 2;
+    public int verticalMovement = 0;
+    public Rigidbody2D rb;
+    public float jumpForce = 2.0f;
 
 
     // Use this for initialization
     void Start () {
         movement = defaultControls;
         grounded = true;
+        rb = GetComponent<Rigidbody2D>();
 	}
 
     // Update is called once per frame
     public void Update() {
         float tempSpeed = MOVEMENT_SPEED;
         float tempMax = MAX_SPEED;
-        int verticalMovement = 0;
         int horizontalMovement = 0;
 
         if (Input.GetKey(movement[MOVE_UP]))
@@ -69,10 +72,9 @@ public class PlayerMovment : MonoBehaviour {
             horizontalMovement -= 1;
         }
 
-        float epsilon = 0.00000001f;
-        if (Input.GetKey(movement[JUMP]) && !NearlyEqual(verticalMovement, JUMP_HEIGHT, epsilon))
+        if (Input.GetKeyDown(movement[JUMP]) && grounded)
         {
-            verticalMovement += 1;
+            rb.AddForce(new Vector2(0.0f, 2.0f) * jumpForce, ForceMode2D.Impulse);
             grounded = false;
         }
         
@@ -83,7 +85,7 @@ public class PlayerMovment : MonoBehaviour {
         }
         else
         {
-            if (Mathf.Abs(verticalMovement - JUMP_HEIGHT) < epsilon)
+            if (verticalMovement == JUMP_HEIGHT)
             {
                 verticalMovement -= 1;
             }
@@ -123,25 +125,8 @@ public class PlayerMovment : MonoBehaviour {
         gameObject.transform.Translate(move);
     }
 
-    public static bool NearlyEqual(float a, float b, float epsilon)
+    private void OnCollisionStay2D(Collision2D collision)
     {
-        double absA = Mathf.Abs(a);
-        double absB = Mathf.Abs(b);
-        double diff = Mathf.Abs(a - b);
-
-        if (a == b)
-        { // shortcut, handles infinities
-            return true;
-        }
-        else if (a == 0 || b == 0 || diff < Double.Epsilon)
-        {
-            // a or b is zero or both are extremely close to it
-            // relative error is less meaningful here
-            return diff < epsilon;
-        }
-        else
-        { // use relative error
-            return diff / (absA + absB) < epsilon;
-        }
+        grounded = true;
     }
 }
