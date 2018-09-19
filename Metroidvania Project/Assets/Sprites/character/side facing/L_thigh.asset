@@ -9,11 +9,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c10c0be6d28fe4d539c4a39822fe301c, type: 3}
-  m_Name: R_L-thigh
+  m_Name: L_thigh
   m_EditorClassIdentifier: 
   m_ApiVersion: 4
   m_Sprite: {fileID: 21300000, guid: 1cd96125d4787524ab6fd70837160373, type: 3}
-  m_SharedMesh: {fileID: 43092727096876878}
+  m_SharedMesh: {fileID: 43557373327452802}
   pivotPoint: {x: 0, y: 0}
   texVertices: []
   edges: []
@@ -21,12 +21,12 @@ MonoBehaviour:
   indices: 
   bindPoses: []
   m_SharedMaterials: []
---- !u!43 &43092727096876878
+--- !u!43 &43557373327452802
 Mesh:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: R_L-thigh
+  m_Name: L_thigh
   serializedVersion: 8
   m_SubMeshes:
   - serializedVersion: 2
@@ -44,7 +44,23 @@ Mesh:
     shapes: []
     channels: []
     fullWeights: []
-  m_BindPose: []
+  m_BindPose:
+  - e00: 0.0048161447
+    e01: -0.22051108
+    e02: 0
+    e03: 0.2619409
+    e10: 0.1860674
+    e11: 0.004063729
+    e12: 0
+    e13: -0.005740891
+    e20: 0
+    e21: 0
+    e22: 0.18611175
+    e23: 0
+    e30: 0
+    e31: 0
+    e32: 0
+    e33: 1
   m_BoneNameHashes: 
   m_RootBoneNameHash: 0
   m_MeshCompression: 0
@@ -52,7 +68,7 @@ Mesh:
   m_KeepVertices: 1
   m_KeepIndices: 1
   m_IndexFormat: 0
-  m_IndexBuffer: 02000100000001000300000000000300040003000500040004000500060006000500070005000800070008000900070009000a0007000a000b00070007000b000c000b000d000c000c000d000e000d000f000e000e000f0010000f0011001000100011001200130012001100
+  m_IndexBuffer: 1300120011001000110012000f00110010000e000f0010000d000f000e000c000d000e000b000d000c0007000b000c000a000b00070009000a000700080009000700050008000700060005000700040005000600030005000400000003000400010003000000020001000000
   m_Skin:
   - weight[0]: 1
     weight[1]: 0
@@ -327,7 +343,7 @@ Mesh:
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
   m_MeshOptimized: 0
---- !u!114 &114236664208938862
+--- !u!114 &114989133035231480
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -336,7 +352,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9e715ea371f114f4a8d2584ad476634d, type: 3}
-  m_Name: R_L-thigh_Data
+  m_Name: L_thigh_Data
   m_EditorClassIdentifier: 
   m_PivotPoint: {x: 85, y: 169}
   m_Vertices:
@@ -564,5 +580,27 @@ MonoBehaviour:
     index2: 1
   m_Holes: []
   m_Indices: 1300000012000000110000001000000011000000120000000f00000011000000100000000e0000000f000000100000000d0000000f0000000e0000000c0000000d0000000e0000000b0000000d0000000c000000070000000b0000000c0000000a0000000b00000007000000090000000a00000007000000080000000900000007000000050000000800000007000000060000000500000007000000040000000500000006000000030000000500000004000000000000000300000004000000010000000300000000000000020000000100000000000000
-  m_BindPoses: []
+  m_BindPoses:
+  - bindPose:
+      e00: 0.0048161447
+      e01: -0.22051108
+      e02: 0
+      e03: 0.2619409
+      e10: 0.1860674
+      e11: 0.004063729
+      e12: 0
+      e13: -0.005740891
+      e20: 0
+      e21: 0
+      e22: 0.18611175
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 1
+    boneLength: 0.5704837
+    path: Left_Thigh
+    name: Left_Thigh
+    color: {r: 1, g: 0, b: 0, a: 1}
+    zOrder: 0
   m_Blendshapes: []
