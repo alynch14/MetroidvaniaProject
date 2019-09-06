@@ -18,6 +18,8 @@ public class Player_Control_ND : MonoBehaviour
     public float glideAmount = 2f;
     public float glideTimer = 2f;
     public float creepSpeed = 3.0f;
+    public float powerJumpSpeed = 10.0f;
+    public float stompSpeed = 4.0f;
     
     //player states
     public bool isGrounded;
@@ -30,6 +32,9 @@ public class Player_Control_ND : MonoBehaviour
     public bool isGliding;
     public bool isDucking;
     public bool isCreeping;
+    public bool isPowerJumping;
+    public bool isStomping;
+
 
     //player abilities
     public bool canDoubleJump = true;
@@ -37,6 +42,8 @@ public class Player_Control_ND : MonoBehaviour
     public bool canWallRun = true;
     public bool canRunAfterWallJump = true;
     public bool canGlide = true;
+    public bool canPowerJump = true;
+    public bool canStomp = true;
 
     private Vector3 moveDirection = Vector3.zero;
     private CharacterController2D characterController;
@@ -90,6 +97,7 @@ public class Player_Control_ND : MonoBehaviour
             moveDirection.y = 0;
             isJumping = false;
             doubleJumped = false;
+            isStomping = false;
             currentGlideTimer = glideTimer;
             if (moveDirection.x < 0)
             {
@@ -107,7 +115,17 @@ public class Player_Control_ND : MonoBehaviour
                 moveDirection = new Vector3(slopeGradient.x * slopeSlideSpeed, slopeGradient.y * slopeSlideSpeed, 0f);
             }
                 if (Input.GetButtonDown("Jump"))
-            {
+                {
+                    if(canPowerJump && isDucking)
+                    {
+                    moveDirection.y = jumpSpeed + powerJumpSpeed;
+                    StartCoroutine("PowerJumpWaiter");
+                    }
+                    else
+                    {
+                    moveDirection.y = jumpSpeed;
+                    isJumping = true;
+                    }
                 moveDirection.y = jumpSpeed;
                 isJumping = true;
                 isWallRunning = true;
@@ -155,6 +173,11 @@ public class Player_Control_ND : MonoBehaviour
                 isGliding = false;
                 moveDirection.y -= gravity * Time.deltaTime;
             }
+        }
+        else if(canStomp && isDucking && !isPowerJumping)
+        {
+            moveDirection.y -= gravity * Time.deltaTime + stompSpeed;
+            isStomping = true;
         }
         else
         {
@@ -263,5 +286,12 @@ public class Player_Control_ND : MonoBehaviour
         isWallRunning = true;
         yield return new WaitForSeconds(0.5f);
         isWallRunning = false;
+    }
+
+    IEnumerator PowerJumpWaiter()
+    {
+        isPowerJumping = true;
+        yield return new WaitForSeconds(0.8f);
+        isPowerJumping = false;
     }
 }
