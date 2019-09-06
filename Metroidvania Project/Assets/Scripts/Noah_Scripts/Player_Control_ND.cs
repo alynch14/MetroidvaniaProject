@@ -17,6 +17,7 @@ public class Player_Control_ND : MonoBehaviour
     public float slopeSlideSpeed = 4f;
     public float glideAmount = 2f;
     public float glideTimer = 2f;
+    public float creepSpeed = 3.0f;
     
     //player states
     public bool isGrounded;
@@ -27,7 +28,9 @@ public class Player_Control_ND : MonoBehaviour
     public bool isWallRunning;
     public bool isSlopeSliding;
     public bool isGliding;
-    
+    public bool isDucking;
+    public bool isCreeping;
+
     //player abilities
     public bool canDoubleJump = true;
     public bool canWallJump = true;
@@ -43,12 +46,18 @@ public class Player_Control_ND : MonoBehaviour
     private bool startGlide;
     private float currentGlideTimer;
     public LayerMask layerMask;
+    private BoxCollider2D boxCollider;
+    private Vector2 originalBoxCollider;
+    private Vector3 frontTopCorner;
+    private Vector3 backTopCorner;
 
     // Start is called before the first frame update
     void Start()
     {
         characterController = GetComponent<CharacterController2D>();
         currentGlideTimer = glideTimer;
+        boxCollider = GetComponent<BoxCollider2D>();
+        originalBoxCollider = boxCollider.size;
     }
 
     // Update is called once per frame
@@ -158,7 +167,44 @@ public class Player_Control_ND : MonoBehaviour
        characterController.move(moveDirection*Time.deltaTime);
        flags = characterController.collisionState;
        isGrounded = flags.below;
-
+        //ducking and crouching
+        frontTopCorner = new Vector3(transform.position.x + boxCollider.size.x/2, transform.position.y +boxCollider.size.y/2, 0);
+        backTopCorner = new Vector3(transform.position.x - boxCollider.size.x / 2, transform.position.y + boxCollider.size.y / 2, 0);
+        RaycastHit2D hitFrontCeiling = Physics2D.Raycast(frontTopCorner, Vector2.up, 2f, layerMask);
+        RaycastHit2D hitBackCeiling = Physics2D.Raycast(backTopCorner, Vector2.up, 2f, layerMask);
+        if (Input.GetAxis("Vertical")<0 && moveDirection.x == 0)
+        {
+            if(!isDucking && !isCreeping)
+            {
+                boxCollider.size = new Vector2(boxCollider.size.x, boxCollider.size.y/2);
+                transform.position = new Vector3(transform.position.x, transform.position.y - (originalBoxCollider.y / 4), 0);
+                characterController.recalculateDistanceBetweenRays();
+            }
+            isCreeping = false;
+            isDucking = true;
+        }
+        else if(Input.GetAxis("Vertical") < 0 && (moveDirection.x <0 || moveDirection.x>0))
+        {
+            if (!isDucking && !isCreeping)
+            {
+                boxCollider.size = new Vector2(boxCollider.size.x, boxCollider.size.y / 2);
+                characterController.recalculateDistanceBetweenRays();
+            }
+            isCreeping = true;
+            isDucking = false;
+        }
+        else
+        {
+            if ((!hitFrontCeiling.collider && !hitBackCeiling) && (isDucking || isCreeping))
+            {
+                boxCollider.size = new Vector2(boxCollider.size.x, originalBoxCollider.y);
+                transform.position = new Vector3(transform.position.x, transform.position.y + (originalBoxCollider.y / 4), 0);
+                characterController.recalculateDistanceBetweenRays();
+                isCreeping = false;
+                isDucking = false;
+            }
+           
+        }
         if (flags.above)
         {
             moveDirection.y -= gravity * Time.deltaTime;
