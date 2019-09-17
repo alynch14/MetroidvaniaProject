@@ -5,8 +5,8 @@ using Prime31;
 
 public class Player_Control_ND : MonoBehaviour
 {
-    //player controls
-    public CharacterController2D.CharacterCollisionState2D flags;
+
+    #region player controls
     public float walkSpeed = 6.0f;
     public float jumpSpeed = 8.0f;
     public float gravity = 20.0f;
@@ -20,8 +20,8 @@ public class Player_Control_ND : MonoBehaviour
     public float creepSpeed = 3.0f;
     public float powerJumpSpeed = 10.0f;
     public float stompSpeed = 4.0f;
-    
-    //player states
+    #endregion
+    #region player states
     public bool isGrounded;
     public bool isJumping;
     public bool isFacingRight;
@@ -34,9 +34,8 @@ public class Player_Control_ND : MonoBehaviour
     public bool isCreeping;
     public bool isPowerJumping;
     public bool isStomping;
-
-
-    //player abilities
+    #endregion
+    #region player abilities
     public bool canDoubleJump = true;
     public bool canWallJump = true;
     public bool canWallRun = true;
@@ -44,7 +43,9 @@ public class Player_Control_ND : MonoBehaviour
     public bool canGlide = true;
     public bool canPowerJump = true;
     public bool canStomp = true;
-
+    #endregion
+    #region Private variables
+    private CharacterController2D.CharacterCollisionState2D flags;
     private Vector3 moveDirection = Vector3.zero;
     private CharacterController2D characterController;
     private bool lastJumpWasLeft;
@@ -59,6 +60,7 @@ public class Player_Control_ND : MonoBehaviour
     private Vector3 backTopCorner;
     private Animator animator;
     private bool ableToWallRun;
+    #endregion
 
     // Start is called before the first frame update
     void Start()
@@ -73,13 +75,20 @@ public class Player_Control_ND : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        characterController = GetComponent<CharacterController2D>();
-        if (wallJumped ==false)
+        //sets the player movement for X
+        if (wallJumped == false)
         {
             moveDirection.x = Input.GetAxis("Horizontal");
-            moveDirection.x *= walkSpeed;
+            if (isCreeping)
+            {
+                moveDirection.x *= creepSpeed;
+            }
+            else
+            {
+                moveDirection.x *= walkSpeed;
+            }
         }
-
+        #region Ground angle check
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector3.up, 2f, layerMask);
         if (hit)
         {
@@ -94,7 +103,9 @@ public class Player_Control_ND : MonoBehaviour
                 isSlopeSliding = false;
             }
         }
-//player is on the ground
+        #endregion
+        #region Player on ground
+        //player is on the ground
         if (isGrounded)
         {
             moveDirection.y = 0;
@@ -107,7 +118,7 @@ public class Player_Control_ND : MonoBehaviour
                 transform.eulerAngles = new Vector3(0, 180, 0);
                 isFacingRight = false;
             }
-            else if(moveDirection.x >0)
+            else if (moveDirection.x > 0)
             {
                 transform.eulerAngles = new Vector3(0, 0, 0);
                 isFacingRight = true;
@@ -117,22 +128,23 @@ public class Player_Control_ND : MonoBehaviour
             {
                 moveDirection = new Vector3(slopeGradient.x * slopeSlideSpeed, slopeGradient.y * slopeSlideSpeed, 0f);
             }
-                if (Input.GetButtonDown("Jump"))
+            if (Input.GetButtonDown("Jump"))
+            {
+                if (canPowerJump && isDucking)
                 {
-                    if(canPowerJump && isDucking)
-                    {
                     moveDirection.y = jumpSpeed + powerJumpSpeed;
                     StartCoroutine("PowerJumpWaiter");
-                    }
-                    else
-                    {
+                }
+                else
+                {
                     moveDirection.y = jumpSpeed;
                     isJumping = true;
-                    }
+                }
                 ableToWallRun = true;
             }
         }
- //player is in the air
+        #endregion
+        #region Player in the air
         else
         {
             if (Input.GetButtonUp("Jump"))
@@ -145,7 +157,8 @@ public class Player_Control_ND : MonoBehaviour
             if (Input.GetButtonDown("Jump"))
             {
                 //double jump
-                if (canDoubleJump) {
+                if (canDoubleJump)
+                {
                     if (!doubleJumped)
                     {
                         moveDirection.y = doubleJumpSpeed;
@@ -154,11 +167,12 @@ public class Player_Control_ND : MonoBehaviour
                 }
             }
         }
-
-//Controls gliding for jetpack
-        if (canGlide ==true && Input.GetAxis("Vertical") > 0.5f && characterController.velocity.y <0.2f)
+        #endregion
+        #region Gravity Calculations
+        //Controls gliding for jetpack
+        if (canGlide == true && Input.GetAxis("Vertical") > 0.5f && characterController.velocity.y < 0.2f)
         {
-            if (currentGlideTimer >0)
+            if (currentGlideTimer > 0)
             {
                 isGliding = true;
                 if (startGlide)
@@ -175,7 +189,7 @@ public class Player_Control_ND : MonoBehaviour
                 moveDirection.y -= gravity * Time.deltaTime;
             }
         }
-        else if(canStomp && isDucking && !isPowerJumping)
+        else if (canStomp && isDucking && !isPowerJumping)
         {
             moveDirection.y -= gravity * Time.deltaTime + stompSpeed;
             isStomping = true;
@@ -186,28 +200,28 @@ public class Player_Control_ND : MonoBehaviour
             startGlide = true;
             moveDirection.y -= gravity * Time.deltaTime;
         }
+        #endregion
+        //update the CharacterController
+        characterController.move(moveDirection * Time.deltaTime);
+        flags = characterController.collisionState;
 
-       moveDirection.y -= gravity * Time.deltaTime;
-       characterController.move(moveDirection*Time.deltaTime);
-       flags = characterController.collisionState;
-       isGrounded = flags.below;
-        //ducking and crouching
-        frontTopCorner = new Vector3(transform.position.x + boxCollider.size.x/2, transform.position.y +boxCollider.size.y/2, 0);
+        #region Ducking and creeping
+        frontTopCorner = new Vector3(transform.position.x + boxCollider.size.x / 2, transform.position.y + boxCollider.size.y / 2, 0);
         backTopCorner = new Vector3(transform.position.x - boxCollider.size.x / 2, transform.position.y + boxCollider.size.y / 2, 0);
         RaycastHit2D hitFrontCeiling = Physics2D.Raycast(frontTopCorner, Vector2.up, 2f, layerMask);
         RaycastHit2D hitBackCeiling = Physics2D.Raycast(backTopCorner, Vector2.up, 2f, layerMask);
-        if (Input.GetAxis("Vertical")<0 && moveDirection.x == 0)
+        if (Input.GetAxis("Vertical") < 0 && moveDirection.x == 0)
         {
-            if(!isDucking && !isCreeping)
+            if (!isDucking && !isCreeping)
             {
-                boxCollider.size = new Vector2(boxCollider.size.x, boxCollider.size.y/2);
+                boxCollider.size = new Vector2(boxCollider.size.x, boxCollider.size.y / 2);
                 transform.position = new Vector3(transform.position.x, transform.position.y - (originalBoxCollider.y / 4), 0);
                 characterController.recalculateDistanceBetweenRays();
             }
             isCreeping = false;
             isDucking = true;
         }
-        else if(Input.GetAxis("Vertical") < 0 && (moveDirection.x <0 || moveDirection.x>0))
+        else if (Input.GetAxis("Vertical") < 0 && (moveDirection.x < 0 || moveDirection.x > 0))
         {
             if (!isDucking && !isCreeping)
             {
@@ -227,18 +241,19 @@ public class Player_Control_ND : MonoBehaviour
                 isCreeping = false;
                 isDucking = false;
             }
-           
+
         }
+        #endregion
         if (flags.above)
         {
             moveDirection.y -= gravity * Time.deltaTime;
         }
-        //wall running and jumping
+        #region wall running and jumping
         if (flags.left || flags.right)
         {
             if (canWallRun)
             {
-                if (Input.GetAxis("Vertical") >0 && ableToWallRun == true)
+                if (Input.GetAxis("Vertical") > 0 && ableToWallRun == true && isGrounded == false)
                 {
                     moveDirection.y = jumpSpeed / wallRunAmount;
                     StartCoroutine(WallRunWaiter());
@@ -247,17 +262,18 @@ public class Player_Control_ND : MonoBehaviour
                     {
                         transform.eulerAngles = new Vector3(0, 180, 0);
                     }
-                    else if(flags.right)
+                    else if (flags.right)
                     {
                         transform.eulerAngles = new Vector3(0, 0, 0);
                     }
                 }
             }
+
             if (canWallJump)
             {
-                if (Input.GetButtonDown("Jump") || wallJumped== false && isGrounded==false)
+                if (Input.GetButtonDown("Jump") || wallJumped == false && isGrounded == false)
                 {
-                    if(moveDirection.x < 0)
+                    if (moveDirection.x < 0)
                     {
                         moveDirection.x = jumpSpeed * wallJumpXAmount;
                         moveDirection.y = jumpSpeed * wallJumpYAmount;
@@ -272,21 +288,31 @@ public class Player_Control_ND : MonoBehaviour
                         lastJumpWasLeft = true;
                     }
                     StartCoroutine(WallJumpWaiter());
+                    if (canRunAfterWallJump)
+                    {
+                        doubleJumped = false;
+                    }
+                    else
+                    {
+                        ableToWallRun = false;
+                    }
                 }
             }
         }
         else
         {
-            if(canRunAfterWallJump)
+            if (canRunAfterWallJump)
             {
                 StopCoroutine(WallRunWaiter());
                 ableToWallRun = true;
                 isWallRunning = false;
             }
         }
-
+        #endregion
+        isGrounded = flags.below;
         UpdateAnimator();
     }
+
     //timer for wall jumping
     IEnumerator WallJumpWaiter()
     {
@@ -300,7 +326,10 @@ public class Player_Control_ND : MonoBehaviour
         isWallRunning = true;
         yield return new WaitForSeconds(0.5f);
         isWallRunning = false;
-        ableToWallRun = false;
+        if (wallJumped == false)
+        {
+            ableToWallRun = false;
+        }
     }
 
     //power jump timer
@@ -310,7 +339,7 @@ public class Player_Control_ND : MonoBehaviour
         yield return new WaitForSeconds(0.8f);
         isPowerJumping = false;
     }
-    
+
     //animator set
     private void UpdateAnimator()
     {
@@ -326,5 +355,6 @@ public class Player_Control_ND : MonoBehaviour
         animator.SetBool("isCreeping", isCreeping);
         animator.SetBool("isPowerJumping", isPowerJumping);
         animator.SetBool("isStomping", isStomping);
+        animator.SetBool("isSlopeSliding", isSlopeSliding);
     }
 }
