@@ -57,6 +57,8 @@ public class Player_Control_ND : MonoBehaviour
     private Vector2 originalBoxCollider;
     private Vector3 frontTopCorner;
     private Vector3 backTopCorner;
+    private Animator animator;
+    private bool ableToWallRun;
 
     // Start is called before the first frame update
     void Start()
@@ -65,6 +67,7 @@ public class Player_Control_ND : MonoBehaviour
         currentGlideTimer = glideTimer;
         boxCollider = GetComponent<BoxCollider2D>();
         originalBoxCollider = boxCollider.size;
+        animator = GetComponentInChildren<Animator>();
     }
 
     // Update is called once per frame
@@ -126,9 +129,7 @@ public class Player_Control_ND : MonoBehaviour
                     moveDirection.y = jumpSpeed;
                     isJumping = true;
                     }
-                moveDirection.y = jumpSpeed;
-                isJumping = true;
-                isWallRunning = true;
+                ableToWallRun = true;
             }
         }
  //player is in the air
@@ -232,14 +233,24 @@ public class Player_Control_ND : MonoBehaviour
         {
             moveDirection.y -= gravity * Time.deltaTime;
         }
+        //wall running and jumping
         if (flags.left || flags.right)
         {
             if (canWallRun)
             {
-                if (Input.GetAxis("Vertical") >0 && isWallRunning == true)
+                if (Input.GetAxis("Vertical") >0 && ableToWallRun == true)
                 {
                     moveDirection.y = jumpSpeed / wallRunAmount;
                     StartCoroutine(WallRunWaiter());
+
+                    if (flags.left)
+                    {
+                        transform.eulerAngles = new Vector3(0, 180, 0);
+                    }
+                    else if(flags.right)
+                    {
+                        transform.eulerAngles = new Vector3(0, 0, 0);
+                    }
                 }
             }
             if (canWallJump)
@@ -269,9 +280,12 @@ public class Player_Control_ND : MonoBehaviour
             if(canRunAfterWallJump)
             {
                 StopCoroutine(WallRunWaiter());
-                isWallRunning = true;
+                ableToWallRun = true;
+                isWallRunning = false;
             }
         }
+
+        UpdateAnimator();
     }
     //timer for wall jumping
     IEnumerator WallJumpWaiter()
@@ -286,12 +300,31 @@ public class Player_Control_ND : MonoBehaviour
         isWallRunning = true;
         yield return new WaitForSeconds(0.5f);
         isWallRunning = false;
+        ableToWallRun = false;
     }
 
+    //power jump timer
     IEnumerator PowerJumpWaiter()
     {
         isPowerJumping = true;
         yield return new WaitForSeconds(0.8f);
         isPowerJumping = false;
+    }
+    
+    //animator set
+    private void UpdateAnimator()
+    {
+        animator.SetFloat("movementX", Mathf.Abs(moveDirection.x / walkSpeed));
+        animator.SetFloat("movementY", moveDirection.y);
+        animator.SetBool("isGrounded", isGrounded);
+        animator.SetBool("isJumping", isJumping);
+        animator.SetBool("doubleJumped", doubleJumped);
+        animator.SetBool("wallJumped", wallJumped);
+        animator.SetBool("isWallRunning", isWallRunning);
+        animator.SetBool("isGliding", isGliding);
+        animator.SetBool("isDucking", isDucking);
+        animator.SetBool("isCreeping", isCreeping);
+        animator.SetBool("isPowerJumping", isPowerJumping);
+        animator.SetBool("isStomping", isStomping);
     }
 }
